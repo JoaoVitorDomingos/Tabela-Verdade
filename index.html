@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criador de Tabela Verdade</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="estilos/style.css">
+</head>
+<body>
+    <header>
+        <h1>Criador de Tabela Verdade</h1>
+    </header>
+    
+    <main>
+        <section id="sec-explicacao">
+            <h2>Tabela Verdade:</h2>
+            <p>Uma tabela verdade é uma representação tabular de todas as combinações possíveis de valores de verdade para as variáveis em uma proposição lógica. Em lógica proposicional, uma proposição é uma afirmação que pode ser verdadeira (V) ou falsa (F). As tabelas verdade são usadas para determinar o valor de verdade de uma proposição composta, que é formada pela combinação de proposições simples usando conectivos lógicos, como E (^), OU (V) e NEGAÇÃO (~).</p>
+
+            <h2>Vocabulário:</h2>
+            <ul>
+                <li><strong>Proposições:</strong> Uma proposição é uma afirmação que pode ser considerada verdadeira ou falsa, mas não ambas ao mesmo tempo. Em outras palavras, é uma declaração que expressa um fato ou uma condição que pode ser verificada como verdadeira ou falsa. Para facilitar o trabalho com proposições na lógica, frequentemente usamos letras minúsculas para representá-las. As letras "p", "q" e "r" são frequentemente utilizadas como variáveis ​​para representar proposições simples. Isso facilita a expressão de proposições mais complexas e a construção de tabelas verdade para avaliar sua validade.</li>
+                <li><strong>Conjunção - E (^):</strong> O operador lógico E representa a conjunção de duas proposições. Ele é verdadeiro apenas quando ambas as proposições que conecta são verdadeiras.</li>
+                <li><strong>Disjunção - OU (V):</strong> O operador lógico OU representa a disjunção de duas proposições. Ele é verdadeiro se pelo menos uma das proposições que conecta for verdadeira.</li>
+                <li><strong>Condicional (=>):</strong> O operador lógico condicional, também conhecido como implicação, representa a relação "se...então...". Ele é verdadeiro quando a proposição antecedente é falsa ou quando ambas a antecedente e consequente são verdadeiras</li>
+                <li><strong>Bicondicional (<=>):</strong> O operador lógico bicondicional representa a relação "se e somente se". Ele é verdadeiro quando ambas as proposições que conecta têm o mesmo valor de verdade (ambas verdadeiras ou ambas falsas)</li>
+                <li><strong>Negação (~):</strong> A negação é um operador lógico que inverte o valor de verdade de uma proposição. Por exemplo, se temos a proposição "p", a negação de "p" é representada como "~p" e indica que a afirmação "p" é falsa.</li>
+            </ul>
+
+            <div>
+                <h2>Exemplo de Tabela Verdade:</h2>
+
+                <table class="tabela_verdade">
+                    <thead>
+                        <tr>
+                            <th scope="col">p</th>
+                            <th scope="col">q</th>
+                            <th scope="col">p ^ q (p E q)</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>V</td>
+                            <td>V</td>
+                            <td>V</td>
+                        </tr>
+                        <tr>
+                            <td>V</td>
+                            <td>F</td>
+                            <td>F</td>
+                        </tr>
+                        <tr>
+                            <td>F</td>
+                            <td>V</td>
+                            <td>F</td>
+                        </tr>
+                        <tr>
+                            <td>F</td>
+                            <td>F</td>
+                            <td>F</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="sec-input">
+            <h1>Crie Aqui sua Tabela Verdade</h1>
+
+            <div>
+                <label for="input-exp">Escreva Aqui sua Expressão Lógica.</label>
+                <input type="text" name="input-exp" id="input-exp">
+
+                <button>Criar</button>
+            </div>
+        </section>
+
+        <section id="sec-tabela-verdade">
+            <table class="tabela_verdade">
+                <caption class="tabela_verdade_caption">Sua expressão:</caption>
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>Criado por <a href="#">João Vitor C. Domingos</a></p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,174 @@
+:root {
+    --fonte_principal: "Open Sans", "Roboto", sans-serif;
+
+    --azul: #61c8f8;
+    --roxo_escuro: #242038;
+    --cinza: #6C757D;
+    --branco_dif: #FFFCF7;
+    --verde: #82FF9E;
+}
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--azul);
+}
+
+/* CABEÇALHO */
+body > header {
+    padding: 40px;
+    text-align: center;
+}
+
+header > h1 {
+    font-size: 3em;
+}
+
+/* CONTEÚDO PRINCIPAL */
+body > main {
+    max-width: 60%;
+    padding: 40px;
+    margin: auto;
+    background-color: var(--branco_dif);
+    border-radius: 5px;
+    box-shadow: 3px 3px 8px var(--roxo_escuro);
+}
+
+h1, h2 {
+    color: var(--roxo_escuro);
+}
+
+h2 {
+    font-size: 2.3em;
+    margin-bottom: 5px;
+}
+
+strong {
+    font-weight: bolder;
+    color: var(--roxo_escuro);
+}
+
+/* SECTION EXPLICAÇÃO */
+main > section#sec-explicacao {
+    text-align: justify;
+}
+
+main > section#sec-explicacao > p {
+    margin-left: 15px;
+    margin-bottom: 40px;
+    text-indent: 15px;
+    font-size: 1.4em;
+}
+
+main > section#sec-explicacao > ul {
+    margin-left: 40px;
+    margin-bottom: 40px;
+}
+
+main > section#sec-explicacao > ul > li {
+    font-size: 1.4em;
+    margin-bottom: 15px;
+}
+
+/* SECTION EXPLICAÇÃO - TABELA */
+table.tabela_verdade {
+    margin: 10px;
+    margin-bottom: 40px;
+    border-collapse: collapse;
+    box-shadow: 3px 4px 7px 0px rgba(0, 0, 0, 0.301);
+}
+
+table.tabela_verdade th, td {
+    border: 2px solid black;
+    padding: 20px 70px;
+    text-align: center;
+}
+
+table.tabela_verdade th {
+    background-color: var(--cinza);
+    font-weight: bolder;
+}
+
+/* SECTION INPUT */
+main > section#sec-input {
+    margin: 100px 0;
+}
+
+main > section#sec-input > h1 {
+    text-align: center;
+    font-size: 2.8em;
+    margin-bottom: 20px;
+}
+
+main > section#sec-input > div {
+    width: 60%;
+    margin: auto;
+}
+
+main > section#sec-input > div > label {
+    font-size: 1.7em;
+}
+
+main > section#sec-input > div > input#input-exp {
+    display: block;
+    margin-top: 5px;
+    padding: 10px 80px;
+    font-size: 1.3em;
+    border: 1px solid black;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.397);
+    border-radius: 3px;
+}
+
+main > section#sec-input > div > button {
+    margin-top: 40px;
+    font-size: 1.1em;
+    padding: 7px 40px;
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.397);
+    color: black;
+}
+
+main > section#sec-input > div > button:hover {
+    font-weight: bolder;
+    border: 2px solid black;
+    box-shadow: 1px 1px 3px black;
+    cursor: pointer;
+}
+
+main > section#sec-tabela-verdade > table.tabela_verdade {
+    margin: auto;
+    margin-bottom: 40px;
+}
+
+main > section#sec-tabela-verdade > table.tabela_verdade > caption.tabela_verdade_caption {
+    font-size: 1.3em;
+    margin-bottom: 10px;
+}
+
+/* RODAPÉ */
+footer {
+    margin-top: 40px;
+    padding: 60px;
+}
+
+footer > p {
+    text-align: center;
+    font-size: 2em;
+}
+
+footer > p > a {
+    text-decoration: none;
+    color: black;
+}
+
+footer > p > a:hover {
+    text-decoration: underline;
+    font-weight: bolder;
+}
+
+
