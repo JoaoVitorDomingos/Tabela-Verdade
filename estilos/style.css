@@ -140,6 +140,7 @@ main > section#sec-input > div > button:hover {
     cursor: pointer;
 }
 
+/* Tabela Verdade do Usuario */
 main > section#sec-tabela-verdade > table.tabela_verdade {
     margin: auto;
     margin-bottom: 40px;

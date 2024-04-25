@@ -75,7 +75,7 @@
                 <label for="input-exp">Escreva Aqui sua Expressão Lógica.</label>
                 <input type="text" name="input-exp" id="input-exp">
 
-                <button>Criar</button>
+                <button id="btn_criar">Criar</button>
             </div>
         </section>
 
@@ -83,14 +83,14 @@
             <table class="tabela_verdade">
                 <caption class="tabela_verdade_caption">Sua expressão:</caption>
                 <thead>
-                    <tr>
+                    <tr id="linha-cabecalho-tab">
                         <th scope="col"></th>
                         <th scope="col"></th>
                         <th scope="col"></th>
                     </tr>
                 </thead>
 
-                <tbody>
+                <tbody id="corpo-tab">
                     <tr>
                         <td></td>
                         <td></td>
@@ -119,5 +119,7 @@
     <footer>
         <p>Criado por <a href="#">João Vitor C. Domingos</a></p>
     </footer>
+
+    <script src="main.js"></script>
 </body>
 </html>
