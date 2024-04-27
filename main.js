@@ -1,15 +1,24 @@
 let btn_criar = document.querySelector("#btn_criar")
 btn_criar.addEventListener("click", main)
 
+let varLogicaE = /([a-zA-Z])\s*\^\s*([a-za-zA-Z])/
+let varLogicaOU = /([a-zA-Z])\s*[Vv]\s*([a-za-zA-Z])/
+let varLogicaCondicional = /([a-zA-Z])\s*=>\s*([a-za-zA-Z])/
+let varLogicaBicon = /([a-zA-Z])\s*<=>\s*([a-za-zA-Z])/
+let varNegacao = /~[a-z]/
+let parenteses = /\(.+?\)/
+let colchetes = /\[.+?\]/
 // ~p ^ q V r V (k <=> q)
 // p ^ q V r
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "p ^ q V r"
+    let input_exp = "(p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]"
     console.log(input_exp)
 
-    pegarProp(input_exp)
+    //pegarProp(input_exp)
+
+    pegarSentencas(input_exp)
 }
 
 function pegarProp(exp_logica) {
@@ -63,5 +72,52 @@ function criarTabela(array_prop) {
         corpo_tab.appendChild(linha_corpo)
     }
     //console.log(corpo_tab)
+}
+
+function pegarSentencas(exp_logica) {
+    // Checa se na expressão lógica tem NEGAÇÃO.
+    // while(varNegacao.test(exp_logica)) {
+    //     // Se tiver negação Irá pegar essa sentença.
+    //     console.log("Na expressão lógica, HÁ NEGAÇÃO:")
+    //     console.log(exp_logica.match(varNegacao))
+    //     console.log("Renomeando a variável lógica:")
+    //     exp_logica = exp_logica.replace(varNegacao, "N")
+    //     console.log(exp_logica)  
+    // }
+
+    // Checa se na expressão lógica tem COLCHETES.
+    while(colchetes.test(exp_logica)) {
+         // Se tiver Colchetes, irá realizar as operações nele primeiro.
+        console.log("Na expressão lógica, HÁ COLCHETES:")
+        console.log(exp_logica.match(colchetes))
+        console.log("Entrando nos Colchetes.")
+        let entrarColchetes = exp_logica.match(colchetes)[0]
+        console.log(entrarColchetes)
+
+        // Checa se dentro dos colchetes tem PARÊNTESES.
+        while(parenteses.test(entrarColchetes)) {
+            // Se tiver, irá realizar as operações neles primeiro.
+            console.log("Dentro dos colchetes, HÁ PARÊNTESES:")
+            console.log(entrarColchetes.match(parenteses))
+            console.log("Entrando nos Parênteses.")
+            let entrarParenteses = entrarColchetes.match(parenteses)[0]
+            console.log(entrarParenteses)
+
+            // Checa se tem E(^) ou OU(V)
+
+            console.log("Renomeando os PARÊNTESES:")
+            entrarColchetes = entrarColchetes.replace(parenteses, "P")
+            console.log(entrarColchetes)
+        }
+
+        console.log("Renomeando os COLCHETES:")
+        exp_logica = exp_logica.replace(colchetes, "C")
+        console.log(exp_logica)
+
+    }
+
+    
+
+
 }
 
