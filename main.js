@@ -8,6 +8,8 @@ let varLogicaBicon = /([a-zA-Z])\s*<=>\s*([a-za-zA-Z])/
 let varNegacao = /~[a-z]/
 let parenteses = /\(.+?\)/
 let colchetes = /\[.+?\]/
+let e_OU = /\^|[Vv]/
+let con_bicon = /=>|<=>/
 // ~p ^ q V r V (k <=> q)
 // p ^ q V r
 
@@ -86,38 +88,116 @@ function pegarSentencas(exp_logica) {
     // }
 
     // Checa se na expressão lógica tem COLCHETES.
-    while(colchetes.test(exp_logica)) {
-         // Se tiver Colchetes, irá realizar as operações nele primeiro.
-        console.log("Na expressão lógica, HÁ COLCHETES:")
-        console.log(exp_logica.match(colchetes))
-        console.log("Entrando nos Colchetes.")
-        let entrarColchetes = exp_logica.match(colchetes)[0]
-        console.log(entrarColchetes)
+    // while(colchetes.test(exp_logica)) {
+    //     Fun_Col(exp_logica)
+    // } 
+}
 
-        // Checa se dentro dos colchetes tem PARÊNTESES.
-        while(parenteses.test(entrarColchetes)) {
-            // Se tiver, irá realizar as operações neles primeiro.
-            console.log("Dentro dos colchetes, HÁ PARÊNTESES:")
-            console.log(entrarColchetes.match(parenteses))
-            console.log("Entrando nos Parênteses.")
-            let entrarParenteses = entrarColchetes.match(parenteses)[0]
-            console.log(entrarParenteses)
+function Fun_Con_Bicon(sentencaConBi) {
+    while(con_bicon.test(sentencaConBi)) {
+        let varConOUbi = sentencaConBi.match(con_bicon)
+        console.log(varConOUbi)
 
-            // Checa se tem E(^) ou OU(V)
+        // Checa se tem CONDICIONAL
+        if(varConOUbi == "=>") {
+            // Se tiver, fará o que tem que ser feito.
+            console.log("Entrou no if da Condicional(=>)")
+            console.log(sentencaConBi.match(varLogicaCondicional))
 
-            console.log("Renomeando os PARÊNTESES:")
-            entrarColchetes = entrarColchetes.replace(parenteses, "P")
-            console.log(entrarColchetes)
+            console.log("Renomeando a Condicional:")
+            sentencaConBi = sentencaConBi.replace(varLogicaCondicional, "Con")
+            console.log(sentencaConBi)
+
+        } else if(varConOUbi == "<=>") { // Checa se tem BICONDICIONAL
+            // Se tiver, fará o que tem que ser feito
+            console.log("Entrou no if da Bicondicional(<=>)")
+            console.log(sentencaConBi.match(varLogicaBicon))
+
+            console.log("Renomeando a Bicondicional:")
+            sentencaConBi = sentencaConBi.replace(varLogicaBicon, "Bi")
+            console.log(sentencaConBi)
+
+        } else {
+            console.log("ERROOOOO!!!!! ALGO NÃO ESTÁ CERTO NO E(^) OU(V)")
         }
+    } 
+}
 
-        console.log("Renomeando os COLCHETES:")
-        exp_logica = exp_logica.replace(colchetes, "C")
-        console.log(exp_logica)
+function Fun_E_Ou(sentencaEOu) {
+    let varLogica = sentencaEOu.match(e_OU)[0]
+    console.log(varLogica)
 
+    //Checa se a variável lógica é um E(^)
+    if(varLogica == "^") {
+        // Se for um E(^), fará o que tem que ser feio.
+        console.log("Entou no if do E(^)")
+        console.log(sentencaEOu.match(varLogicaE))
+
+        console.log("Renomeando o E(^)")
+        sentencaEOu = sentencaEOu.replace(varLogicaE, "E")
+        console.log(sentencaEOu)
+
+
+    } else if (varLogica == "V" || varLogica == "v") { // Checa se a variável lógica é um OU(V)
+        // Se for um OU(V), fará o que tem que ser feio.
+        console.log("Entrou no if do OU(V)")
+        console.log(sentencaEOu.match(varLogicaOU))
+
+        console.log("Renomeando o OU(V)")
+        sentencaEOu = sentencaEOu.replace(varLogicaOU, "O")
+        console.log(sentencaEOu)
+
+
+    } else {
+        console.log("ERROOOOO!!!!! ALGO NÃO ESTÁ CERTO NO E(^) OU(V)")
     }
 
+    return sentencaEOu
+}
+
+function Fun_Paren(sentecaParen) {
+    // Se tiver, irá realizar as operações neles primeiro.
+    console.log("Dentro dos colchetes, HÁ PARÊNTESES:")
+    console.log(sentecaParen.match(parenteses))
+    console.log("Entrando nos Parênteses.")
+    let entrarParenteses = sentecaParen.match(parenteses)[0]
+    console.log(entrarParenteses)
+
     
+    // Checa se tem E(^) ou OU(V), usando a função E_Ou.
+    while(e_OU.test(entrarParenteses)) {
+        var sentenca_conBi = Fun_E_Ou(entrarParenteses)
+        console.log("Senteça depois da função E OU:")
+        console.log(sentenca_conBi)
+    }
 
+    console.log("Sentença do E OU fora do loop, antes de entrar na função Condicional e Bi.")
+    console.log(sentenca_conBi)
+    //Checa se tem Condicional(=>) ou Bicondicional(<=>), usando a função Con_Bicon.
+    while(con_bicon.test(sentencaConBi)) {
+        Fun_Con_Bicon(sentenca_conBi)
+    }
 
+    console.log("Renomeando os PARÊNTESES:")
+    sentecaParen = sentecaParen.replace(parenteses, "P")
+    console.log(sentecaParen)
+}
+
+function Fun_Col(sentenca_col) {
+    // Se tiver Colchetes, irá realizar as operações nele primeiro.
+    console.log("Na expressão lógica, HÁ COLCHETES:")
+    console.log(sentenca_col.match(colchetes))
+    console.log("Entrando nos Colchetes.")
+    let entrarColchetes = sentenca_col.match(colchetes)[0]
+    console.log(entrarColchetes)
+
+    // Checa se dentro dos colchetes tem PARÊNTESES.
+    while(parenteses.test(entrarColchetes)) {
+        Fun_Paren(entrarColchetes)
+    }
+
+    console.log("Renomeando os COLCHETES:")
+    sentenca_col = sentenca_col.replace(colchetes, "C")
+    console.log(sentenca_col)
 }
 
