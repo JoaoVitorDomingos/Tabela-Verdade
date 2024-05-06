@@ -12,10 +12,11 @@ let e_OU = /\^|[Vv]/
 let con_bicon = /=>|<=>/
 // ~p ^ q V r V (k <=> q)
 // p ^ q V r
+// (p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "(p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]"
+    let input_exp = "p ^ q V r"
     console.log(input_exp)
 
     //pegarProp(input_exp)
@@ -78,29 +79,63 @@ function criarTabela(array_prop) {
 
 function pegarSentencas(exp_logica) {
     // Checa se na expressão lógica tem NEGAÇÃO.
-    let exp_editada = Negacao(exp_logica)
+    let exp_editada = RealizarNegacao(exp_logica)
     console.log(`Expressão editada, após negação: ${exp_editada}`)
 
+    RealizarE_Ou(exp_editada)
 
     
 }
 
-function Negacao(exp_logica) {
-    while(varNegacao.test(exp_logica)) {
-        // Se tiver negação Irá pegar essa sentença.
-        console.log("Na expressão lógica, HÁ NEGAÇÃO:")
-        console.log(exp_logica.match(varNegacao))
-        console.log("Renomeando a variável lógica:")
-        exp_logica = exp_logica.replace(varNegacao, "N")
-        console.log(exp_logica)
+function RealizarNegacao(exp_logica) {
+    if(varNegacao.test(exp_logica)) {
+        while(varNegacao.test(exp_logica)) {
+            // Se tiver negação Irá pegar essa sentença.
+            console.log("Na expressão lógica, HÁ NEGAÇÃO:")
+            console.log(exp_logica.match(varNegacao))
+            console.log("Renomeando a variável lógica:")
+            exp_logica = exp_logica.replace(varNegacao, "N")
+            console.log(exp_logica)
+        }
+    } else {
+        console.log("Não há negação nesta preposição.")
     }
+    
 
     return exp_logica
 }
 
-function Colchetes() {
-    
-}
+function RealizarE_Ou(exp_logica) {
+    // Checa se tem E ou OU.
+    while(e_OU.test(exp_logica)) {
+        //Verifica qual é a variável lógica
+        console.log(exp_logica.match(e_OU))
+        let varLogica = exp_logica.match(e_OU)[0]
+        console.log(`A variável lógica encontrada foi o ${varLogica}`)
+
+        if(varLogica == "^") {
+            // Se for E(^) 
+            console.log("Variável lógica E(^)")
+            console.log(exp_logica.match(varLogicaE))
+            console.log("Renomeando a expressão: " + exp_logica.match(varLogicaE)[0])
+            exp_logica = exp_logica.replace(varLogicaE, "E")
+            console.log(exp_logica)
+
+        } else if (varLogica == "V" || varLogica == "v") {
+            console.log("Variável lógica OU(v)")
+            console.log(exp_logica.match(varLogicaOU))
+            console.log("Renomeando a expressão: " + exp_logica.match(varLogicaOU)[0])
+            exp_logica = exp_logica.replace(varLogicaOU, "O")
+            console.log(exp_logica)
+
+
+        } else {
+            console.log("TEM ALGUM PROBLEMA NA FUNÇÃO RealizarE_OU!!!!")
+        }
+    }
+
+    return exp_logica
+} 
 
 
 
