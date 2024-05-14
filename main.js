@@ -13,10 +13,11 @@ let con_bicon = /=>|<=>/
 // ~p ^ q V r V (k <=> q)
 // p ^ q V r
 // (p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]
+// [(p ^ q => r) <=> (p v q) V (p <=> r)] V [p <=> r ^ q => s] <=> (p V r) ^ ~p
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "p ^ q V r"
+    let input_exp = "(p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]"
     console.log(input_exp)
 
     //pegarProp(input_exp)
@@ -82,7 +83,17 @@ function pegarSentencas(exp_logica) {
     let exp_editada = RealizarNegacao(exp_logica)
     console.log(`Expressão editada, após negação: ${exp_editada}`)
 
-    RealizarE_Ou(exp_editada)
+    // Checa se tem colchetes
+    exp_editada = RealizarColchetes(exp_editada)
+
+    // Checa se tem parenteses 
+    exp_editada = RealizarParenteses(exp_editada)
+
+    // Checa se tem E ou Ou 
+    exp_editada = RealizarE_Ou(exp_editada)
+
+    // Checa se tem Condicional ou Bicondicional
+    exp_editada = RealizarCon_Bicon(exp_editada)
 
     
 }
@@ -122,6 +133,7 @@ function RealizarE_Ou(exp_logica) {
             console.log(exp_logica)
 
         } else if (varLogica == "V" || varLogica == "v") {
+            // Se for Ou(v)
             console.log("Variável lógica OU(v)")
             console.log(exp_logica.match(varLogicaOU))
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaOU)[0])
@@ -137,5 +149,88 @@ function RealizarE_Ou(exp_logica) {
     return exp_logica
 } 
 
+function RealizarCon_Bicon(exp_logica) {
+    // Checa se tem Condicional ou Bicondicional
+    while(con_bicon.test(exp_logica)) {
+        //Verifica qual é a variável lógica
+        console.log(exp_logica.match(con_bicon))
+        let varLogica = exp_logica.match(con_bicon)[0]
+        console.log(`A variável lógica encontrada foi a ${varLogica}`)
 
+        if(varLogica == "=>") {
+            // Se for CONDICIONAL (=>)
+            console.log("Variável Lógica Condicional(=>)")
+            console.log(exp_logica.match(varLogicaCondicional))
+            console.log("Renomeando a expressão: " + exp_logica.match(varLogicaCondicional)[0])
+            exp_logica = exp_logica.replace(varLogicaCondicional, "C")
+            console.log(exp_logica)
+
+        } else if(varLogica == "<=>") {
+            // Se for BICONDICIONAL (<=>)
+            console.log("Variável Lógica Bicondicional(<=>)")
+            console.log(exp_logica.match(varLogicaBicon))
+            console.log("Renomeando a expressão: " + exp_logica.match(varLogicaBicon)[0])
+            exp_logica = exp_logica.replace(varLogicaBicon, "B")
+            console.log(exp_logica)
+
+        } else {
+            console.log("TEM ALGUM PROBLEMA NA FUNÇÃO RealizarCon_Bicon!!!!")
+        }
+    }
+
+    return exp_logica
+}
+
+function RealizarParenteses(exp_logica) {
+    // Checa se tem parenteses
+    while(parenteses.test(exp_logica)) {
+        console.log("Há parenteses na expressão:")
+        let sentencaParen = exp_logica.match(parenteses)[0]
+        console.log(sentencaParen)
+
+        // Checa se tem E ou Ou
+        sentencaParen = RealizarE_Ou(sentencaParen)
+        console.log("Expressão editada depois do E_Ou: " + sentencaParen)
+
+        // Checa se tem Condicional e Bicondicional
+        sentencaParen = RealizarCon_Bicon(sentencaParen)
+        console.log("Expressão editada depois do E_Ou: " + sentencaParen)
+
+        // Renomeia os parenteses
+        console.log("Renomeando os parenteses:")
+        exp_logica = exp_logica.replace(parenteses, "P")
+        console.log(exp_logica)
+        
+    }
+
+    return exp_logica
+}
+
+function RealizarColchetes(exp_logica) {
+    // Checa se tem Colchetes
+    while(colchetes.test(exp_logica)) {
+        console.log("Há colchetes na expressão:")
+        let sentencaCol = exp_logica.match(colchetes)[0]
+        console.log(sentencaCol)
+
+        // Checa se tem Parentêses
+        sentencaCol = RealizarParenteses(sentencaCol)
+        console.log("Expressão editada depois dos Parenteses: " + sentencaCol)
+
+        // Checa se tem E ou Ou
+        sentencaCol = RealizarE_Ou(sentencaCol)
+        console.log("Expressão editada depois do E_Ou: " + sentencaCol)
+
+        // Checa se tem Condicional e Bicondicional
+        sentencaCol = RealizarCon_Bicon(sentencaCol)
+        console.log("Expressão editada depois do Con_Bicon: " + sentencaCol)
+
+        // Renomeia os Colchetes 
+        console.log("Renomeando os colchetes:")
+        exp_logica = exp_logica.replace(colchetes, "A")
+        console.log(exp_logica)
+    }
+
+    return exp_logica
+}
 
