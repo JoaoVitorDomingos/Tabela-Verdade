@@ -1,3 +1,16 @@
+class Proposicoes {
+    constructor(pnome, psentenca, ptab_verdade) {
+        this.nome = pnome
+        this.sentenca = psentenca
+        this.tab_verdade = ptab_verdade
+    }
+}
+
+let array_prop = []
+
+let array_nome_prop = []
+
+
 let btn_criar = document.querySelector("#btn_criar")
 btn_criar.addEventListener("click", main)
 
@@ -17,8 +30,9 @@ let con_bicon = /=>|<=>/
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "(p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]"
+    let input_exp = "p ^ q V p"
     console.log(input_exp)
+
 
     //pegarProp(input_exp)
 
@@ -28,7 +42,8 @@ function main() {
 function pegarProp(exp_logica) {
     // Pega as proprosições e filtra para não ter repetições.
     let proposicoes = exp_logica.match(/[a-z]/g)
-    //console.log(proposicoes)
+    console.log("Proposições Simples (Repetidas) presente na sentença:")
+    console.log(proposicoes)
 
     let qtd_prop = []
     proposicoes.forEach(elemento => {
@@ -40,6 +55,7 @@ function pegarProp(exp_logica) {
         }
     });
 
+    console.log("Proposições Simples (Filtradas) presente na sentença:")
     console.log(qtd_prop)
 
     criarTabela(qtd_prop)
@@ -84,16 +100,16 @@ function pegarSentencas(exp_logica) {
     console.log(`Expressão editada, após negação: ${exp_editada}`)
 
     // Checa se tem colchetes
-    exp_editada = RealizarColchetes(exp_editada)
+    //exp_editada = RealizarColchetes(exp_editada)
 
     // Checa se tem parenteses 
-    exp_editada = RealizarParenteses(exp_editada)
+    //exp_editada = RealizarParenteses(exp_editada)
 
     // Checa se tem E ou Ou 
     exp_editada = RealizarE_Ou(exp_editada)
 
     // Checa se tem Condicional ou Bicondicional
-    exp_editada = RealizarCon_Bicon(exp_editada)
+    //exp_editada = RealizarCon_Bicon(exp_editada)
 
     
 }
@@ -104,8 +120,11 @@ function RealizarNegacao(exp_logica) {
             // Se tiver negação Irá pegar essa sentença.
             console.log("Na expressão lógica, HÁ NEGAÇÃO:")
             console.log(exp_logica.match(varNegacao))
+
             console.log("Renomeando a variável lógica:")
-            exp_logica = exp_logica.replace(varNegacao, "N")
+            let simbolo = "~"
+            let nome = DarNome(array_nome_prop, simbolo)
+            exp_logica = exp_logica.replace(varNegacao, nome)
             console.log(exp_logica)
         }
     } else {
@@ -124,11 +143,15 @@ function RealizarE_Ou(exp_logica) {
         let varLogica = exp_logica.match(e_OU)[0]
         console.log(`A variável lógica encontrada foi o ${varLogica}`)
 
+        let nome
+
         if(varLogica == "^") {
             // Se for E(^) 
             console.log("Variável lógica E(^)")
             console.log(exp_logica.match(varLogicaE))
+
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaE)[0])
+            //nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaE, "E")
             console.log(exp_logica)
 
@@ -136,7 +159,9 @@ function RealizarE_Ou(exp_logica) {
             // Se for Ou(v)
             console.log("Variável lógica OU(v)")
             console.log(exp_logica.match(varLogicaOU))
+
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaOU)[0])
+            //nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaOU, "O")
             console.log(exp_logica)
 
@@ -234,3 +259,66 @@ function RealizarColchetes(exp_logica) {
     return exp_logica
 }
 
+function DarNome(array_prop, simbolo) {
+    let letra
+    let num = 0
+    let nome
+
+    function DefinirLetra() {
+        if(simbolo == "^") {
+            letra = "E"
+            console.log("Simbolo ^: " + letra)
+        } else if(simbolo == "v" || simbolo == "V") {
+            letra = "O"
+            console.log("Simbolo v ou V: " + letra)
+        } else if(simbolo == "=>") {
+            letra = "C"
+            console.log("Simbolo =>: " + letra)
+        } else if(simbolo == "<=>") {
+            letra = "B"
+            console.log("Simbolo <=>: " + letra)
+        } else if(simbolo == "P") {
+            letra = "P"
+            console.log("Parenteses: " + letra)
+        } else if (simbolo == "Col") {
+            letra = "A"
+            console.log("Colchetes: " + letra)
+        } else if (simbolo == "~") {
+            letra = "N"
+            console.log("Simbolo ~: " + letra)
+        }
+    }
+
+    function CriarNome() {
+        console.log("Entrou na função")
+
+        DefinirLetra()
+
+        nome = `${letra}${++num}`
+        console.log(nome)
+
+        temEsteNome = array_prop.includes(nome)
+        console.log("Tem este nome? " + temEsteNome)
+    }
+
+    CriarNome()
+
+    while(temEsteNome) {
+        console.log("Entrou no Loop!")
+        console.log("Existe este nome!")
+        
+        CriarNome()
+    }
+
+    console.log("Saiu do loop!")
+
+    console.log(nome)
+    if(!temEsteNome) {
+        console.log("Não existe este nome!")
+        array_prop.push(nome)
+        console.log("Nome adicionado ao array!")
+        console.log(array_prop)
+    }
+    
+    return nome
+}
