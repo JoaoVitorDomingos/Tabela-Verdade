@@ -14,10 +14,10 @@ let array_nome_prop = []
 let btn_criar = document.querySelector("#btn_criar")
 btn_criar.addEventListener("click", main)
 
-let varLogicaE = /([a-zA-Z])\s*\^\s*([a-za-zA-Z])/
-let varLogicaOU = /([a-zA-Z])\s*[Vv]\s*([a-za-zA-Z])/
-let varLogicaCondicional = /([a-zA-Z])\s*=>\s*([a-za-zA-Z])/
-let varLogicaBicon = /([a-zA-Z])\s*<=>\s*([a-za-zA-Z])/
+let varLogicaE = /([a-zA-Z][1-9]*)\s*\^\s*([a-zA-Z][1-9]*)/
+let varLogicaOU = /([a-zA-Z][1-9]*)\s*[Vv]\s*([a-zA-Z][1-9]*)/
+let varLogicaCondicional = /([a-zA-Z][1-9]*)\s*=>\s*([a-zA-Z][1-9]*)/
+let varLogicaBicon = /([a-zA-Z][1-9]*)\s*<=>\s*([a-zA-Z][1-9]*)/
 let varNegacao = /~[a-z]/
 let parenteses = /\(.+?\)/
 let colchetes = /\[.+?\]/
@@ -30,13 +30,14 @@ let con_bicon = /=>|<=>/
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "p ^ q V p"
+    let input_exp = "p v q ^ t V q"
     console.log(input_exp)
 
 
-    //pegarProp(input_exp)
+    let prop_simples = pegarProp(input_exp)
+    TabVerPropSim(prop_simples)
 
-    pegarSentencas(input_exp)
+    //pegarSentencas(input_exp)
 }
 
 function pegarProp(exp_logica) {
@@ -47,18 +48,24 @@ function pegarProp(exp_logica) {
 
     let qtd_prop = []
     proposicoes.forEach(elemento => {
-        if(qtd_prop.includes(elemento) == false) {
-            qtd_prop.push(elemento)
-            //console.log(`A proposição ${elemento} não está no array, então será adicionada.`)
+        if(elemento == "v") {
+            console.log(`Isso: ${elemento}, não é uma proposição, mas sim uma variável logica(Ou).`)
         } else {
-            //console.log(`A proposição ${elemento} já está no array, então, não será adicionada.`)
+            if(qtd_prop.includes(elemento) == false) {
+                qtd_prop.push(elemento)
+                //console.log(`A proposição ${elemento} não está no array, então será adicionada.`)
+            } else {
+                //console.log(`A proposição ${elemento} já está no array, então, não será adicionada.`)
+            }
         }
     });
 
     console.log("Proposições Simples (Filtradas) presente na sentença:")
     console.log(qtd_prop)
 
-    criarTabela(qtd_prop)
+    //criarTabela(qtd_prop)
+
+    return qtd_prop
 }
 
 function criarTabela(array_prop) {
@@ -100,16 +107,16 @@ function pegarSentencas(exp_logica) {
     console.log(`Expressão editada, após negação: ${exp_editada}`)
 
     // Checa se tem colchetes
-    //exp_editada = RealizarColchetes(exp_editada)
+    exp_editada = RealizarColchetes(exp_editada)
 
     // Checa se tem parenteses 
-    //exp_editada = RealizarParenteses(exp_editada)
+    exp_editada = RealizarParenteses(exp_editada)
 
     // Checa se tem E ou Ou 
     exp_editada = RealizarE_Ou(exp_editada)
 
     // Checa se tem Condicional ou Bicondicional
-    //exp_editada = RealizarCon_Bicon(exp_editada)
+    exp_editada = RealizarCon_Bicon(exp_editada)
 
     
 }
@@ -120,6 +127,8 @@ function RealizarNegacao(exp_logica) {
             // Se tiver negação Irá pegar essa sentença.
             console.log("Na expressão lógica, HÁ NEGAÇÃO:")
             console.log(exp_logica.match(varNegacao))
+            let sentenca = exp_logica.match(varNegacao)[0]
+            //console.log(sentenca)
 
             console.log("Renomeando a variável lógica:")
             let simbolo = "~"
@@ -143,26 +152,26 @@ function RealizarE_Ou(exp_logica) {
         let varLogica = exp_logica.match(e_OU)[0]
         console.log(`A variável lógica encontrada foi o ${varLogica}`)
 
-        let nome
-
         if(varLogica == "^") {
             // Se for E(^) 
             console.log("Variável lógica E(^)")
             console.log(exp_logica.match(varLogicaE))
+            let sentenca = exp_logica.match(varLogicaE)[0]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaE)[0])
-            //nome = DarNome(array_nome_prop, varLogica)
-            exp_logica = exp_logica.replace(varLogicaE, "E")
+            let nome = DarNome(array_nome_prop, varLogica)
+            exp_logica = exp_logica.replace(varLogicaE, nome)
             console.log(exp_logica)
 
         } else if (varLogica == "V" || varLogica == "v") {
             // Se for Ou(v)
             console.log("Variável lógica OU(v)")
             console.log(exp_logica.match(varLogicaOU))
+            let sentenca = exp_logica.match(varLogicaOU)[0]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaOU)[0])
-            //nome = DarNome(array_nome_prop, varLogica)
-            exp_logica = exp_logica.replace(varLogicaOU, "O")
+            let nome = DarNome(array_nome_prop, varLogica)
+            exp_logica = exp_logica.replace(varLogicaOU, nome)
             console.log(exp_logica)
 
 
@@ -186,16 +195,22 @@ function RealizarCon_Bicon(exp_logica) {
             // Se for CONDICIONAL (=>)
             console.log("Variável Lógica Condicional(=>)")
             console.log(exp_logica.match(varLogicaCondicional))
+            let sentenca = exp_logica.match(varLogicaCondicional)[0]
+
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaCondicional)[0])
-            exp_logica = exp_logica.replace(varLogicaCondicional, "C")
+            let nome = DarNome(array_nome_prop, varLogica)
+            exp_logica = exp_logica.replace(varLogicaCondicional, nome)
             console.log(exp_logica)
 
         } else if(varLogica == "<=>") {
             // Se for BICONDICIONAL (<=>)
             console.log("Variável Lógica Bicondicional(<=>)")
             console.log(exp_logica.match(varLogicaBicon))
+            let sentenca = exp_logica.match(varLogicaBicon)[0]
+
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaBicon)[0])
-            exp_logica = exp_logica.replace(varLogicaBicon, "B")
+            let nome = DarNome(array_nome_prop, varLogica)
+            exp_logica = exp_logica.replace(varLogicaBicon, nome)
             console.log(exp_logica)
 
         } else {
@@ -211,6 +226,7 @@ function RealizarParenteses(exp_logica) {
     while(parenteses.test(exp_logica)) {
         console.log("Há parenteses na expressão:")
         let sentencaParen = exp_logica.match(parenteses)[0]
+        let simbolo = "P"
         console.log(sentencaParen)
 
         // Checa se tem E ou Ou
@@ -223,7 +239,8 @@ function RealizarParenteses(exp_logica) {
 
         // Renomeia os parenteses
         console.log("Renomeando os parenteses:")
-        exp_logica = exp_logica.replace(parenteses, "P")
+        let nome = DarNome(array_nome_prop, simbolo)
+        exp_logica = exp_logica.replace(parenteses, nome)
         console.log(exp_logica)
         
     }
@@ -236,6 +253,7 @@ function RealizarColchetes(exp_logica) {
     while(colchetes.test(exp_logica)) {
         console.log("Há colchetes na expressão:")
         let sentencaCol = exp_logica.match(colchetes)[0]
+        let simbolo = "Col"
         console.log(sentencaCol)
 
         // Checa se tem Parentêses
@@ -252,7 +270,8 @@ function RealizarColchetes(exp_logica) {
 
         // Renomeia os Colchetes 
         console.log("Renomeando os colchetes:")
-        exp_logica = exp_logica.replace(colchetes, "A")
+        let nome = DarNome(array_nome_prop, simbolo)
+        exp_logica = exp_logica.replace(colchetes, nome)
         console.log(exp_logica)
     }
 
@@ -321,4 +340,47 @@ function DarNome(array_prop, simbolo) {
     }
     
     return nome
+}
+
+function TabVerPropSim(array_prop_sim) {
+    let expoente = array_prop_sim.length
+
+    let total = Math.pow(2, expoente)
+
+    console.log("Expoente: " + expoente)
+    console.log(`Total: ${total}`)
+
+    let ver_fal = total / 2
+
+    array_prop_sim.forEach(prop => {
+        console.log("Verdadeiro Falso: " + ver_fal)
+        console.log(prop)
+
+        let array = []
+        let val_logico = true
+
+        let i = 0
+        while(array.length < total && i <= ver_fal) {
+            if(i == ver_fal) {
+                if(val_logico)
+                    val_logico = false
+                else
+                    val_logico = true
+
+                i = 0
+            } else {
+                array.push(val_logico)
+                i++
+            }
+        }
+
+        console.log(`${prop}: ${array}`)
+        let prop_simples = new Proposicoes(prop, prop, array)
+        array_prop.push(prop_simples)
+
+        ver_fal = ver_fal / 2
+        
+    })
+
+    console.log(array_prop)
 }
