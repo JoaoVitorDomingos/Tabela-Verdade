@@ -34,10 +34,16 @@ function main() {
     console.log(input_exp)
 
 
-    let prop_simples = pegarProp(input_exp)
-    TabVerPropSim(prop_simples)
+    //let prop_simples = pegarProp(input_exp)
+    //TabVerPropSim(prop_simples)
 
     //pegarSentencas(input_exp)
+
+    let var_logica = "V"
+    let primeira = new Proposicoes("p", "p", [true, true, false, false])
+    let segunda = new Proposicoes("q", "q", [true, false, true, false])
+
+    Comparador(var_logica, primeira, segunda)
 }
 
 function pegarProp(exp_logica) {
@@ -383,4 +389,68 @@ function TabVerPropSim(array_prop_sim) {
     })
 
     console.log(array_prop)
+}
+
+function Comparador(var_logica, primeira_sen, segunda_sen) {
+    // Faz a tabela verdade da negação.
+    if(var_logica == "~") {
+        console.log("Entrou na Negação!")
+        console.log("Tabela verdade da proposição " + primeira_sen.sentenca + ":")
+        console.log(primeira_sen.tab_verdade)
+
+        console.log("Essa proposição será negada.")
+        let nova_tab = []
+        primeira_sen.tab_verdade.forEach(el => {
+            if(el) 
+                el = false
+            else
+                el = true
+            nova_tab.push(el)
+        })
+
+        console.log(`Nova tabela da proposição ${primeira_sen.sentenca}(~${primeira_sen.sentenca}):`)
+        console.log(nova_tab)
+    } else if(var_logica == "^") { // Faz a tabela verdade do AND(E).
+        console.log("Entrou no AND(E)!")
+        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}:`)
+        console.log(primeira_sen.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
+        console.log(segunda_sen.tab_verdade)
+
+        let nova_tab = []
+        for(i = 0; i < primeira_sen.tab_verdade.length && i < segunda_sen.tab_verdade.length; i++) {
+            let val1 = primeira_sen.tab_verdade[i]
+            let val2 = segunda_sen.tab_verdade[i]
+
+            if(val1 && val2) {
+                nova_tab.push(true)
+            } else {
+                nova_tab.push(false)
+            }
+        }
+
+        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} ^ ${segunda_sen.sentenca}:`)
+        console.log(nova_tab)
+
+    } else if(var_logica == "v" || var_logica == "V") { // Faz a tabela verdade do OR(OU)
+        console.log("Entrou no OR(OU)!")
+        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}:`)
+        console.log(primeira_sen.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
+        console.log(segunda_sen.tab_verdade)
+
+        let nova_tab = []
+        for(i = 0; i < primeira_sen.tab_verdade.length && i < primeira_sen.tab_verdade.length; i++) {
+            let val1 = primeira_sen.tab_verdade[i]
+            let val2 = primeira_sen.tab_verdade[i]
+            // ERROOOOOO AQUI!!!!!!!!!
+            if(val1 == true || val2 == true) 
+                nova_tab.push(true)
+            else
+                nova_tab.push(false)
+        }
+
+        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} V ${segunda_sen.sentenca}`)
+        console.log(nova_tab)
+    }
 }
