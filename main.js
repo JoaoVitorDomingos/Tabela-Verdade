@@ -131,8 +131,8 @@ function RealizarNegacao(exp_logica) {
             //console.log(sentenca)
 
             //Criando a tabela verdade
-            // let nova_tab = Comparador("~", sentenca)
-            // console.log("Tabela Verdade Criada: " + nova_tab)
+            let nova_tab = Comparador("~", sentenca)
+            console.log("Tabela Verdade Criada: " + nova_tab)
 
             console.log("Renomeando a variável lógica:")
             let simbolo = "~"
@@ -392,13 +392,41 @@ function TabVerPropSim(array_prop_sim) {
 function Comparador(var_logica, primeira_sen, segunda_sen) {
     // Faz a tabela verdade da negação.
     if(var_logica == "~") {
+        let index
+        let sen = array_prop.find((el, i) => {
+            if(el.sentenca == primeira_sen) {
+                index = i
+                return el.sentenca
+            }
+                
+        })
         console.log("Entrou na Negação!")
-        console.log("Tabela verdade da proposição " + primeira_sen.sentenca + ":")
-        console.log(primeira_sen.tab_verdade)
+        console.log("Tabela verdade da proposição " + sen + ":")
+        console.log(array_prop[index].tab_verdade)
 
         console.log("Essa proposição será negada.")
         let nova_tab = []
-        primeira_sen.tab_verdade.forEach(el => {
+        let tab = array_prop.find(el => {
+            console.log("Filtrando o elemento no array:")
+            console.log("Elemento: ")
+            console.log(el)
+            console.log("Primeira sentença: ")
+            console.log(primeira_sen)
+
+            if(el.sentenca == primeira_sen) {
+                console.log("Elemento e senteça certos: ")
+                console.log(el)
+                console.log(el.sentenca)
+                console.log("Tabela Verdade: ")
+                console.log(el.tab_verdade)
+
+                return el.tab_verdade;
+            } else 
+                console.log("Elemento não correspondido!")
+        })
+
+
+        tab.forEach(el => {
             if(el) 
                 el = false
             else
