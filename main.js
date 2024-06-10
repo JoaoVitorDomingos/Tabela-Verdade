@@ -30,14 +30,73 @@ let con_bicon = /=>|<=>/
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "~p"
+    let input_exp = "(C1 V O1)" // p => q V p ^ q ^ q v q
     console.log(input_exp)
 
 
-    let prop_simples = pegarProp(input_exp)
-    TabVerPropSim(prop_simples)
+    //let prop_simples = pegarProp(input_exp)
+    //TabVerPropSim(prop_simples)
 
-    pegarSentencas(input_exp)
+    //pegarSentencas(input_exp)
+
+    let t = new Proposicoes("E1", "E2 ^ q", [false, false, false, false])
+    let o = new Proposicoes("O1", "E1 v q", [false, false, false, false])
+    let r = new Proposicoes("t", "t", [false, false, false, false])
+    let p = new Proposicoes("C1", "p => q", [false, false, false, false])
+    let z = new Proposicoes("E2", "p ^ q", [false, false, false, false])
+    array_prop.push(t)
+    array_prop.push(o)
+    array_prop.push(r)
+    array_prop.push(p)
+    array_prop.push(z)
+
+    console.log(array_prop)
+
+    function Testando(exp) {
+        let regExNomeComp = /[A-UW-Z][1-9]*/g
+        console.log(exp.match(regExNomeComp))
+        let teste = exp.match(regExNomeComp)
+        console.log("Teste")
+        console.log(teste)
+
+        teste.map(nome => {
+            console.log("Nome que quero achar: " + nome)
+            array_prop.map(prop => {
+                console.log("Array prop:")
+                console.log(prop)
+
+                if(prop.nome == nome) {
+                    console.log("ACHEIII!")
+                    console.log("Sentença: " + prop.sentenca)
+                    let s = prop.sentenca
+                    if(regExNomeComp.test(s)) {
+                        console.log("VENDO SE TEM")
+                        console.log(s.match(regExNomeComp))
+                        let nova_s = Testando(s)
+
+                        console.log("Colocando no lugar do " + nome + " a sentença " + nova_s)
+                        exp = exp.replace(nome, nova_s)
+                        console.log(exp)
+
+                    } else {
+                        console.log("Colocando no lugar do " + nome + " a sentença " + s)
+                        exp = exp.replace(nome, s)
+                        console.log(exp)
+                    }
+                }
+            })
+        })
+
+        console.log("NOVA EXPRESSÃO: ")
+        console.log(exp)
+        return exp
+    }
+
+    let final = Testando(input_exp)
+    //final = final.replace("(", "")
+    //final = final.replace(")", "")
+    console.log("FINAL: " + final)
+    
 }
 
 function pegarProp(exp_logica) {
@@ -139,6 +198,10 @@ function RealizarNegacao(exp_logica) {
             let nome = DarNome(array_nome_prop, simbolo)
             exp_logica = exp_logica.replace(varNegacao, nome)
             console.log(exp_logica)
+
+            // Criando o novo objeto para esta proposição
+            sentenca = `~${sentenca}`
+            Criador(nome, sentenca, nova_tab)
         }
     } else {
         console.log("Não há negação nesta preposição.")
@@ -156,28 +219,49 @@ function RealizarE_Ou(exp_logica) {
         let varLogica = exp_logica.match(e_OU)[0]
         console.log(`A variável lógica encontrada foi o ${varLogica}`)
 
+        let sentenca
+        let prop1
+        let prop2
+
         if(varLogica == "^") {
             // Se for E(^) 
             console.log("Variável lógica E(^)")
             console.log(exp_logica.match(varLogicaE))
-            let sentenca = exp_logica.match(varLogicaE)[0]
+            sentenca = exp_logica.match(varLogicaE)[0]
+            prop1 = exp_logica.match(varLogicaE)[1]
+            prop2 = exp_logica.match(varLogicaE)[2]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaE)[0])
             let nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaE, nome)
             console.log(exp_logica)
 
+            //Criando a tabela verdade
+            let nova_tab = Comparador(varLogica, prop1, prop2)
+            console.log("Tabela Verdade Criada: " + nova_tab)
+
+            // Criando o novo objeto para esta proposição
+            Criador(nome, sentenca, nova_tab)
+
         } else if (varLogica == "V" || varLogica == "v") {
             // Se for Ou(v)
             console.log("Variável lógica OU(v)")
             console.log(exp_logica.match(varLogicaOU))
-            let sentenca = exp_logica.match(varLogicaOU)[0]
+            sentenca = exp_logica.match(varLogicaOU)[0]
+            prop1 = exp_logica.match(varLogicaOU)[1]
+            prop2 = exp_logica.match(varLogicaOU)[2]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaOU)[0])
             let nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaOU, nome)
             console.log(exp_logica)
 
+            //Criando a tabela verdade
+            let nova_tab = Comparador(varLogica, prop1, prop2)
+            console.log("Tabela Verdade Criada: " + nova_tab)
+
+            // Criando o novo objeto para esta proposição
+            Criador(nome, sentenca, nova_tab)
 
         } else {
             console.log("TEM ALGUM PROBLEMA NA FUNÇÃO RealizarE_OU!!!!")
@@ -195,27 +279,49 @@ function RealizarCon_Bicon(exp_logica) {
         let varLogica = exp_logica.match(con_bicon)[0]
         console.log(`A variável lógica encontrada foi a ${varLogica}`)
 
+        let sentenca
+        let prop1
+        let prop2
+
         if(varLogica == "=>") {
             // Se for CONDICIONAL (=>)
             console.log("Variável Lógica Condicional(=>)")
             console.log(exp_logica.match(varLogicaCondicional))
-            let sentenca = exp_logica.match(varLogicaCondicional)[0]
+            sentenca = exp_logica.match(varLogicaCondicional)[0]
+            prop1 = exp_logica.match(varLogicaCondicional)[1]
+            prop2 = exp_logica.match(varLogicaCondicional)[2]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaCondicional)[0])
             let nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaCondicional, nome)
             console.log(exp_logica)
 
+            //Criando a tabela verdade
+            let nova_tab = Comparador(varLogica, prop1, prop2)
+            console.log("Tabela Verdade Criada: " + nova_tab)
+
+            // Criando o novo objeto para esta proposição
+            Criador(nome, sentenca, nova_tab)
+
         } else if(varLogica == "<=>") {
             // Se for BICONDICIONAL (<=>)
             console.log("Variável Lógica Bicondicional(<=>)")
             console.log(exp_logica.match(varLogicaBicon))
-            let sentenca = exp_logica.match(varLogicaBicon)[0]
+            sentenca = exp_logica.match(varLogicaBicon)[0]
+            prop1 = exp_logica.match(varLogicaBicon)[1]
+            prop2 = exp_logica.match(varLogicaBicon)[2]
 
             console.log("Renomeando a expressão: " + exp_logica.match(varLogicaBicon)[0])
             let nome = DarNome(array_nome_prop, varLogica)
             exp_logica = exp_logica.replace(varLogicaBicon, nome)
             console.log(exp_logica)
+
+            //Criando a tabela verdade
+            let nova_tab = Comparador(varLogica, prop1, prop2)
+            console.log("Tabela Verdade Criada: " + nova_tab)
+
+            // Criando o novo objeto para esta proposição
+            Criador(nome, sentenca, nova_tab)
 
         } else {
             console.log("TEM ALGUM PROBLEMA NA FUNÇÃO RealizarCon_Bicon!!!!")
@@ -246,6 +352,8 @@ function RealizarParenteses(exp_logica) {
         let nome = DarNome(array_nome_prop, simbolo)
         exp_logica = exp_logica.replace(parenteses, nome)
         console.log(exp_logica)
+
+        // Criando o objeto
         
     }
 
@@ -390,65 +498,61 @@ function TabVerPropSim(array_prop_sim) {
 }
 
 function Comparador(var_logica, primeira_sen, segunda_sen) {
+    let sen1 = array_prop.find(el => {
+        if(el.nome == primeira_sen)
+            return el
+    })
+
+    let sen2 = array_prop.find(el => {
+        if(el.nome == segunda_sen)
+            return el
+        else {
+            console.log("sen2 vazia")
+            return null
+        }
+    })
+
+    console.log("Senteça 1 achada: ")
+    console.log(sen1)
+
+    console.log("Sentença 2 achada: ")
+    console.log(sen2)
+
+    let nova_tab = []
+
     // Faz a tabela verdade da negação.
     if(var_logica == "~") {
-        let index
-        let sen = array_prop.find((el, i) => {
-            if(el.sentenca == primeira_sen) {
-                index = i
-                return el.sentenca
-            }
-                
-        })
         console.log("Entrou na Negação!")
-        console.log("Tabela verdade da proposição " + sen + ":")
-        console.log(array_prop[index].tab_verdade)
+        console.log("Tabela verdade da proposição " + sen1.sentenca + ":")
+        console.log(sen1.tab_verdade)
 
         console.log("Essa proposição será negada.")
-        let nova_tab = []
-        let tab = array_prop.find(el => {
-            console.log("Filtrando o elemento no array:")
-            console.log("Elemento: ")
-            console.log(el)
-            console.log("Primeira sentença: ")
-            console.log(primeira_sen)
 
-            if(el.sentenca == primeira_sen) {
-                console.log("Elemento e senteça certos: ")
-                console.log(el)
-                console.log(el.sentenca)
-                console.log("Tabela Verdade: ")
-                console.log(el.tab_verdade)
-
-                return el.tab_verdade;
-            } else 
-                console.log("Elemento não correspondido!")
+        sen1.tab_verdade.map(valor => {
+            if(valor) {
+                console.log("VALOR: " + valor)
+                valor = false
+            } else {
+                console.log("VALOR: " + valor)
+                valor = true
+            }
+            nova_tab.push(valor)
         })
 
-
-        tab.forEach(el => {
-            if(el) 
-                el = false
-            else
-                el = true
-            nova_tab.push(el)
-        })
-
-        console.log(`Nova tabela da proposição ${primeira_sen.sentenca}(~${primeira_sen.sentenca}):`)
+        console.log(`Nova tabela da proposição ${sen1.sentenca}(~${sen1.sentenca}):`)
         console.log(nova_tab)
         return nova_tab
 
     } else if(var_logica == "^") { // Faz a tabela verdade do AND(E).
         console.log("Entrou no AND(E)!")
-        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}:`)
-        console.log(primeira_sen.tab_verdade)
-        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
-        console.log(segunda_sen.tab_verdade)
+        console.log(`Tabela verdade da primeira proposição - ${sen1.sentenca}:`)
+        console.log(sen1.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${sen2.sentenca}:`)
+        console.log(sen2.tab_verdade)
 
-        let nova_tab = []
-        for(i = 0; i < primeira_sen.tab_verdade.length && i < segunda_sen.tab_verdade.length; i++) {
-            let val1 = primeira_sen.tab_verdade[i]
-            let val2 = segunda_sen.tab_verdade[i]
+        for(i = 0; i < sen1.tab_verdade.length && i < sen2.tab_verdade.length; i++) {
+            let val1 = sen1.tab_verdade[i]
+            let val2 = sen2.tab_verdade[i]
 
             if(val1 && val2) {
                 nova_tab.push(true)
@@ -457,21 +561,20 @@ function Comparador(var_logica, primeira_sen, segunda_sen) {
             }
         }
 
-        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} ^ ${segunda_sen.sentenca}:`)
+        console.log(`Nova tabela verdade da operação ${sen1.sentenca} ^ ${sen2.sentenca}:`)
         console.log(nova_tab)
         return nova_tab
 
     } else if(var_logica == "v" || var_logica == "V") { // Faz a tabela verdade do OR(OU)
         console.log("Entrou no OR(OU)!")
-        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}:`)
-        console.log(primeira_sen.tab_verdade)
-        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
-        console.log(segunda_sen.tab_verdade)
+        console.log(`Tabela verdade da primeira proposição - ${sen1.sentenca}:`)
+        console.log(sen1.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${sen2.sentenca}:`)
+        console.log(sen2.tab_verdade)
 
-        let nova_tab = []
-        for(i = 0; i < primeira_sen.tab_verdade.length && i < primeira_sen.tab_verdade.length; i++) {
-            let val1 = primeira_sen.tab_verdade[i]
-            let val2 = segunda_sen.tab_verdade[i]
+        for(i = 0; i < sen1.tab_verdade.length && i < sen2.tab_verdade.length; i++) {
+            let val1 = sen1.tab_verdade[i]
+            let val2 = sen2.tab_verdade[i]
 
             if(val1 || val2) 
                 nova_tab.push(true)
@@ -479,21 +582,20 @@ function Comparador(var_logica, primeira_sen, segunda_sen) {
                 nova_tab.push(false)
         }
 
-        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} V ${segunda_sen.sentenca}`)
+        console.log(`Nova tabela verdade da operação ${sen1.sentenca} V ${sen2.sentenca}`)
         console.log(nova_tab)
         return nova_tab
 
     } else if(var_logica == "=>") { // Faz a tabela verdade da Condicional
         console.log("Entrou na Condicional")
-        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}`)
-        console.log(primeira_sen.tab_verdade)
-        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
-        console.log(segunda_sen.tab_verdade)
+        console.log(`Tabela verdade da primeira proposição - ${sen1.sentenca}`)
+        console.log(sen1.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${sen2.sentenca}:`)
+        console.log(sen2.tab_verdade)
 
-        let nova_tab = []
-        for(i = 0; i < primeira_sen.tab_verdade.length && i < primeira_sen.tab_verdade.length; i++) {
-            let val1 = primeira_sen.tab_verdade[i]
-            let val2 = segunda_sen.tab_verdade[i]
+        for(i = 0; i < sen1.tab_verdade.length && i < sen2.tab_verdade.length; i++) {
+            let val1 = sen1.tab_verdade[i]
+            let val2 = sen2.tab_verdade[i]
 
             if(val1 && !val2)
                 nova_tab.push(false)
@@ -501,21 +603,20 @@ function Comparador(var_logica, primeira_sen, segunda_sen) {
                 nova_tab.push(true)
         }
 
-        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} V ${segunda_sen.sentenca}`)
+        console.log(`Nova tabela verdade da operação ${sen1.sentenca} => ${sen2.sentenca}`)
         console.log(nova_tab)
         return nova_tab
 
     } else if(var_logica == "<=>") {
         console.log("Entrou na Bicondicional")
-        console.log(`Tabela verdade da primeira proposição - ${primeira_sen.sentenca}`)
-        console.log(primeira_sen.tab_verdade)
-        console.log(`Tabela verdade da segunda proposição - ${segunda_sen.sentenca}:`)
-        console.log(segunda_sen.tab_verdade)
+        console.log(`Tabela verdade da primeira proposição - ${sen1.sentenca}`)
+        console.log(sen1.tab_verdade)
+        console.log(`Tabela verdade da segunda proposição - ${sen2.sentenca}:`)
+        console.log(sen2.tab_verdade)
 
-        let nova_tab = []
-        for(i = 0; i < primeira_sen.tab_verdade.length && i < primeira_sen.tab_verdade.length; i++) {
-            let val1 = primeira_sen.tab_verdade[i]
-            let val2 = segunda_sen.tab_verdade[i]
+        for(i = 0; i < sen1.tab_verdade.length && i < sen2.tab_verdade.length; i++) {
+            let val1 = sen1.tab_verdade[i]
+            let val2 = sen2.tab_verdade[i]
 
             if(val1 == val2) 
                 nova_tab.push(true)
@@ -523,9 +624,18 @@ function Comparador(var_logica, primeira_sen, segunda_sen) {
                 nova_tab.push(false)
         }
 
-        console.log(`Nova tabela verdade da operação ${primeira_sen.sentenca} V ${segunda_sen.sentenca}`)
+        console.log(`Nova tabela verdade da operação ${sen1.sentenca} <=> ${sen2.sentenca}`)
         console.log(nova_tab)
         return nova_tab
 
     }
+}
+
+function Criador(nome, sentenca, tabela) {
+    console.log("Criando o novo objeto:")
+    let nova_prop = new Proposicoes(nome, sentenca, tabela)
+    console.log(nova_prop)
+    console.log("Adicionando este objeto ao array.")
+    array_prop.push(nova_prop)
+    console.log(array_prop)
 }
