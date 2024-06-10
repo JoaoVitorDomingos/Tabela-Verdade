@@ -31,7 +31,7 @@ let regExNomeComp = /[A-UW-Z][1-9]*/g
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "(p ^ q => p)" 
+    let input_exp = "[p ^ q => p]" 
     console.log(input_exp)
 
 
@@ -345,6 +345,25 @@ function RealizarColchetes(exp_logica) {
         let nome = DarNome(array_nome_prop, simbolo)
         exp_logica = exp_logica.replace(colchetes, nome)
         console.log(exp_logica)
+
+        // Pegar Tabela Verdade
+        console.log("Pegando a Tabela Verdade")
+        console.log(sentencaCol)
+        let tab = PegarTab(sentencaCol)
+        console.log(tab)
+
+        // Pegando a senteça completa
+        console.log("Pegando a senteça completa")
+        console.log("Sentença Parenteses: " + sentencaCol)
+        sentencaCol = SentencaCompleta(sentencaCol)
+        console.log("Sentença Parenteses Final: " + sentencaCol)
+
+        // Criando o objeto
+        let paren = new Proposicoes(nome, sentencaCol, tab)
+        console.log("Novo objeto Parenteses criado: ")
+        console.log(paren)
+        array_prop.push(paren)
+        console.log(array_prop)
     }
 
     return exp_logica
