@@ -23,6 +23,7 @@ let parenteses = /\(.+?\)/
 let colchetes = /\[.+?\]/
 let e_OU = /\^|[Vv]/
 let con_bicon = /=>|<=>/
+let regExNomeComp = /[A-UW-Z][1-9]*/g
 // ~p ^ q V r V (k <=> q)
 // p ^ q V r
 // (p => q) <=> [(~p ^ q <=> p v q) => (~q => r <=> t)]
@@ -30,72 +31,14 @@ let con_bicon = /=>|<=>/
 
 function main() {
     //let input_exp = document.querySelector("#input-exp").value
-    let input_exp = "(C1 V O1)" // p => q V p ^ q ^ q v q
+    let input_exp = "(p ^ q => p)" 
     console.log(input_exp)
 
 
-    //let prop_simples = pegarProp(input_exp)
-    //TabVerPropSim(prop_simples)
+    let prop_simples = pegarProp(input_exp)
+    TabVerPropSim(prop_simples)
 
-    //pegarSentencas(input_exp)
-
-    let t = new Proposicoes("E1", "E2 ^ q", [false, false, false, false])
-    let o = new Proposicoes("O1", "E1 v q", [false, false, false, false])
-    let r = new Proposicoes("t", "t", [false, false, false, false])
-    let p = new Proposicoes("C1", "p => q", [false, false, false, false])
-    let z = new Proposicoes("E2", "p ^ q", [false, false, false, false])
-    array_prop.push(t)
-    array_prop.push(o)
-    array_prop.push(r)
-    array_prop.push(p)
-    array_prop.push(z)
-
-    console.log(array_prop)
-
-    function Testando(exp) {
-        let regExNomeComp = /[A-UW-Z][1-9]*/g
-        console.log(exp.match(regExNomeComp))
-        let teste = exp.match(regExNomeComp)
-        console.log("Teste")
-        console.log(teste)
-
-        teste.map(nome => {
-            console.log("Nome que quero achar: " + nome)
-            array_prop.map(prop => {
-                console.log("Array prop:")
-                console.log(prop)
-
-                if(prop.nome == nome) {
-                    console.log("ACHEIII!")
-                    console.log("Sentença: " + prop.sentenca)
-                    let s = prop.sentenca
-                    if(regExNomeComp.test(s)) {
-                        console.log("VENDO SE TEM")
-                        console.log(s.match(regExNomeComp))
-                        let nova_s = Testando(s)
-
-                        console.log("Colocando no lugar do " + nome + " a sentença " + nova_s)
-                        exp = exp.replace(nome, nova_s)
-                        console.log(exp)
-
-                    } else {
-                        console.log("Colocando no lugar do " + nome + " a sentença " + s)
-                        exp = exp.replace(nome, s)
-                        console.log(exp)
-                    }
-                }
-            })
-        })
-
-        console.log("NOVA EXPRESSÃO: ")
-        console.log(exp)
-        return exp
-    }
-
-    let final = Testando(input_exp)
-    //final = final.replace("(", "")
-    //final = final.replace(")", "")
-    console.log("FINAL: " + final)
+    pegarSentencas(input_exp)
     
 }
 
@@ -353,7 +296,24 @@ function RealizarParenteses(exp_logica) {
         exp_logica = exp_logica.replace(parenteses, nome)
         console.log(exp_logica)
 
+        // Pegar Tabela Verdade
+        console.log("Pegando a Tabela Verdade")
+        console.log(sentencaParen)
+        let tab = PegarTab(sentencaParen)
+        console.log(tab)
+
+        // Pegando a senteça completa
+        console.log("Pegando a senteça completa")
+        console.log("Sentença Parenteses: " + sentencaParen)
+        sentencaParen = SentencaCompleta(sentencaParen)
+        console.log("Sentença Parenteses Final: " + sentencaParen)
+
         // Criando o objeto
+        let paren = new Proposicoes(nome, sentencaParen, tab)
+        console.log("Novo objeto Parenteses criado: ")
+        console.log(paren)
+        array_prop.push(paren)
+        console.log(array_prop)
         
     }
 
@@ -638,4 +598,67 @@ function Criador(nome, sentenca, tabela) {
     console.log("Adicionando este objeto ao array.")
     array_prop.push(nova_prop)
     console.log(array_prop)
+}
+
+function SentencaCompleta(exp) {
+    console.log("MATCH: ")
+    console.log(exp.match(regExNomeComp))
+    let nomes = exp.match(regExNomeComp)
+    console.log("Array Nomes:")
+    console.log(nomes)
+
+    nomes.map(nome => {
+        console.log("Nome que quero achar: " + nome)
+        array_prop.map(prop => {
+            //console.log("Array prop:")
+            //console.log(prop)
+
+            if(prop.nome == nome) {
+                console.log("ACHEIII!")
+                console.log(prop)
+                console.log("Sentença: " + prop.sentenca)
+                let s = prop.sentenca
+                if(regExNomeComp.test(s)) {
+                    console.log("TEM NOME COMPOSTO NA SENTENÇA")
+                    console.log(s.match(regExNomeComp))
+                    let nova_s = SentencaCompleta(s)
+
+                    console.log("Colocando no lugar do " + nome + " a sentença " + nova_s)
+                    exp = exp.replace(nome, nova_s)
+                    console.log(exp)
+
+                } else {
+                    console.log("Colocando no lugar do " + nome + " a sentença " + s)
+                    exp = exp.replace(nome, s)
+                    console.log(exp)
+                }
+            }
+        })
+    })
+
+    //exp = exp.replace("(", "")
+    //exp = exp.replace(")", "")
+    console.log("NOVA EXPRESSÃO: ")
+    console.log(exp)
+    return exp
+}
+
+function PegarTab(sentenca) {
+    console.log("Elemento que quero:")
+    let nome = sentenca.match(regExNomeComp)
+    console.log(nome)
+
+    let tab_elemento
+
+    array_prop.map(el => {
+        if(el.nome == nome) {
+            console.log("Achei o elemento: ")
+            console.log(el)
+            tab_elemento = el.tab_verdade
+        }
+    })
+    console.log("Tabela Verdade do elemento: ")
+    console.log(tab_elemento)
+
+    return tab_elemento
 }
